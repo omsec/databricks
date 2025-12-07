@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: bronze_lz
+    database: experimental
+    schema: bronze_lz
+    tables:
+      - name: cog_codegroup
+      - name: cod_codedefinition
+      - name: usr_user
+      - name: emp_employee
+      - name: cmp_campaign
+      - name: cst_customer
+      - name: cse_customer_employee
+      - name: adr_address
+      - name: cin_customerinterest
+      - name: srv_servicerequest
+      - name: pct_productcategory
+      - name: prd_product
+      - name: ord_order
+      - name: oit_orderitem
+      - name: trx_transaction
+      - name: wrh_warehouse
+      - name: inv_inventory
+      - name: csb_customer_badge
+      - name: exg_expertsgroup
+      - name: cxg_customer_expertsgroup

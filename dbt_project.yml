@@ -22,6 +22,13 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+# roger, added:
+# https://automate-dv.readthedocs.io/en/latest/worked_example/we_setup/
+# (old records will be ignored due to rowhash check)
+vars:
+  load_date: '2000-01-01'
+  hash_content_casing: 'DISABLED'
+
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -31,6 +38,54 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   dbr_vault:
-    # Config indicated by + and applies to all files under models/example/
-    example:
+    raw_stage:
       +materialized: view
+      +tags:
+        - 'raw'
+    stage:
+      +materialized: view
+      +tags:
+        - 'stage'
+      +enabled: true
+    silver_rv:
+      +schema: silver_rv
+      +materialized: incremental
+      hubs:
+        +tags:
+          - 'hub'
+      links:
+        +tags:
+          - 'link'
+      sats:
+        +tags:
+          - 'satellite'
+      t_links:
+        +tags:
+          - 't_link'
+      references:
+        +materialized: table
+        +tags:
+          - 'reference'
+    silver_bv:
+      +schema: silver_bv
+      +materialized: incremental
+      views:
+        +materialized: view
+        +tags:
+          - 'view'
+      bridges:
+        +tags:
+          - 'bridge'
+      pits:
+        +tags:
+          - 'pit'
+    gold_im:
+      +schema: gold_im
+      +materialized: incremental
+      marts:
+        +tags:
+          - 'mart'
+        d_date:
+          +enabled: true
+        f_sales:
+          +enabled: true
