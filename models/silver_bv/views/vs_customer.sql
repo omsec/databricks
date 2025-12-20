@@ -1,3 +1,3 @@
 select
 	t.*
-from {{ ref('_rvs_customer') }} t
+from {{ ref('_vbs_customer') }} t
