@@ -27,6 +27,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # (old records will be ignored due to rowhash check)
 vars:
   load_date: '2000-01-01'
+  hash: SHA # sha-256
   hash_content_casing: 'DISABLED'
 
 
