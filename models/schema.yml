@@ -5,6 +5,7 @@ sources:
     database: experimental
     schema: bronze_lz
     tables:
+      - name: bdg_badge
       - name: cog_codegroup
       - name: cod_codedefinition
       - name: usr_user
