@@ -1,0 +1,10 @@
+dbr_vault:
+  target: databricks_job
+  outputs:
+    databricks_job:
+      type: databricks
+      method: http
+      schema: bronze_ss
+      host: adb-2891500320300771.11.azuredatabricks.net
+      http_path: /sql/1.0/warehouses/af41db877efc1e32
+      token: "{{ env_var('DBT_ACCESS_TOKEN') }}"
