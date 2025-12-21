@@ -20,7 +20,7 @@ with calendarDates as (
     )
 )
 select
-  10000 * year(calendar_date) + 100 * month(calendar_date) + day(calendar_date) as calendar_date_key,
+  10000 * year(calendar_date) + 100 * month(calendar_date) + day(calendar_date) as d_date,
   to_date(calendar_date) as calendar_date,
   year(calendar_date) calendar_year,
   month(calendar_date) calendar_month,
