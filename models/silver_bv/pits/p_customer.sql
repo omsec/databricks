@@ -1,12 +1,17 @@
 -- PITs are implemented as incremental dbt models
--- this way, the latest open record (2099) is ended before a new state is inserted
--- Remember, for performance reasons, and with respect of deleted_ts these periods
--- are physically saved as a table rather than calculated as a view.
--- (deleted_ts is already applied in the BV-views)
+-- this way, the latest open record (2099) is ended before a new state is inserted.
+-- Remember, for performance reasons, these periods are physically saved as a table
+-- rather than calculated as a view.
+-- Deleted records are included, as they may be needed for patching/business views.
 
 -- Codes are be spared out, since this might be static data and onyl typos are
 -- corrected over time. So we might want to apply the latest code descriptions
 -- over the entity's entire history.
+
+-- Users are not part of pits, as they are joined in higher views
+-- (usually the latest version)
+
+-- PITs directly access RV-tables; as periods are built within from collected timestamps
 
 {{
     config(
@@ -25,16 +30,12 @@ with dates as (
 		sCstM.load_ts as sCstM_load_ts
 	from silver_rv.h_customer hCst
 	-- use outer joins where necessary
-	join silver_rv.s_customer sCst
+	join {{ ref('s_customer') }} sCst
 		on sCst.hk_customer = hCst.hk_customer
-	join silver_rv.s_customer_extended sCstExt
+	join {{ ref('s_customer_extended') }} sCstExt
 		on sCstExt.hk_customer = hCst.hk_customer
-	join silver_rv.s_customer_meta sCstM
+	join {{ ref('s_customer_meta') }} sCstM
 		on sCstM.hk_customer = hCst.hk_customer
-	left outer join silver_rv.s_codedefinition cdGenderEN
-		on  cdGenderEN.cog_group = 1
-		and cdGenderEN.cod_value = sCst.cod_gender
-		and cdGenderEN.cod_language = 10
 ),
 dates_unpivot (
 	select distinct
@@ -71,13 +72,13 @@ periods_data as (
     from periods dts
     join {{ ref('h_customer') }} hCst
         on hCst.hk_customer = dts.hk_customer
-    join {{ ref('vs_customer') }} sCst
+    join {{ ref('s_customer') }} sCst
         on  sCst.hk_customer = dts.hk_customer
         and dts.valid_from between sCst.load_ts and sCst.loadend_ts
-    join {{ ref('vs_customer_extended') }} sCstExt
+    join {{ ref('s_customer_extended') }} sCstExt
         on  sCstExt.hk_customer = dts.hk_customer
         and dts.valid_from between sCstExt.load_ts and sCstExt.loadend_ts
-    join {{ ref('vs_customer_meta') }} sCstM
+    join {{ ref('s_customer_meta') }} sCstM
         on  sCstM.hk_customer = dts.hk_customer
         and dts.valid_from between sCstM.load_ts and sCstM.loadend_ts
     group by
