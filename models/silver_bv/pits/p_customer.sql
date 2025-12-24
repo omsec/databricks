@@ -74,13 +74,13 @@ periods_data as (
         on hCst.hk_customer = dts.hk_customer
     join {{ ref('s_customer') }} sCst
         on  sCst.hk_customer = dts.hk_customer
-        and dts.valid_from between sCst.load_ts and sCst.loadend_ts
+        and dts.valid_from = sCst.load_ts
     join {{ ref('s_customer_extended') }} sCstExt
         on  sCstExt.hk_customer = dts.hk_customer
-        and dts.valid_from between sCstExt.load_ts and sCstExt.loadend_ts
+        and dts.valid_from = sCstExt.load_ts
     join {{ ref('s_customer_meta') }} sCstM
         on  sCstM.hk_customer = dts.hk_customer
-        and dts.valid_from between sCstM.load_ts and sCstM.loadend_ts
+        and dts.valid_from = sCstM.load_ts
     group by
         dts.hk_customer,
         hCst.cst_customer_no, -- denorm for usability
