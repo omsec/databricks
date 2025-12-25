@@ -70,15 +70,16 @@ periods_data as (
         max(sCstExt.load_ts) as sCstExt_load_ts,
         max(sCstM.load_ts) as sCstM_load_ts
     from periods dts
-    join {{ ref('h_customer') }} hCst
+	-- using outer joins, since we deal with different history-lines
+    left outer join {{ ref('h_customer') }} hCst
         on hCst.hk_customer = dts.hk_customer
-    join {{ ref('s_customer') }} sCst
+    left outer join {{ ref('s_customer') }} sCst
         on  sCst.hk_customer = dts.hk_customer
         and dts.valid_from = sCst.load_ts
-    join {{ ref('s_customer_extended') }} sCstExt
+    left outer join {{ ref('s_customer_extended') }} sCstExt
         on  sCstExt.hk_customer = dts.hk_customer
         and dts.valid_from = sCstExt.load_ts
-    join {{ ref('s_customer_meta') }} sCstM
+    left outer join {{ ref('s_customer_meta') }} sCstM
         on  sCstM.hk_customer = dts.hk_customer
         and dts.valid_from = sCstM.load_ts
     group by
